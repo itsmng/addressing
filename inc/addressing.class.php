@@ -62,6 +62,7 @@ class PluginAddressingAddressing extends CommonDBTM
 
    public function rawSearchOptions()
    {
+      $tab = parent::rawSearchOptions();
 
       $tab[] = [
          'id' => 'common',
@@ -121,7 +122,7 @@ class PluginAddressingAddressing extends CommonDBTM
          'table' => 'glpi_entities',
          'field' => 'completename',
          'name' => __('Entity'),
-         'datatype' => 'dropdown'
+         'datatype' => 'dropdown',
       ];
 
       $tab[] = [
