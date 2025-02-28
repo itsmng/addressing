@@ -94,6 +94,11 @@ function plugin_addressing_install() {
          $DB->runFile(GLPI_ROOT . "/plugins/addressing/sql/update-2.9.1.sql");
       }
 
+      //Version 2.9.2
+      if (!$DB->fieldExists("glpi_plugin_addressing_addressings", "is_recursive")) {
+         $DB->runFile(GLPI_ROOT . "/plugins/addressing/sql/update-2.9.2.sql");
+      }
+
    }
 
    if ($update) {
