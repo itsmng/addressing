@@ -14,7 +14,6 @@ CREATE TABLE `glpi_plugin_addressing_addressings` (
    `double_ip` tinyint(1) NOT NULL default '0',
    `free_ip` tinyint(1) NOT NULL default '0',
    `reserved_ip` tinyint(1) NOT NULL default '0',
-   `use_ping` tinyint(1) NOT NULL default '0',
    `comment` text collate utf8_unicode_ci,
    `is_deleted` tinyint(1) NOT NULL default '0',
    PRIMARY KEY  (`id`),
