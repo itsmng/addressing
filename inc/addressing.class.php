@@ -483,8 +483,7 @@ class PluginAddressingAddressing extends CommonDBTM
       if (isset($entities)) {
          $sql .= $dbu->getEntitiesRestrictRequest(" AND ", "dev", "entities_id", $entities, false);
       } else {
-         $is_recursive = isset($recursive_view) ? $recursive_view : $this->fields['is_recursive'];
-         if ($is_recursive) {
+         if ($recursive_view == true) {
             // Get all child entities
             $sons = getSonsOf('glpi_entities', $this->fields['entities_id']);
             $sons = implode(',', $sons);
@@ -546,8 +545,7 @@ class PluginAddressingAddressing extends CommonDBTM
          if (isset($entities)) {
             $sql .= $dbu->getEntitiesRestrictRequest(" AND ", "dev", "entities_id", $entities, false);
          } else {
-            $is_recursive = isset($recursive_view) ? $recursive_view : $this->fields['is_recursive'];
-            if ($is_recursive) {
+            if ($recursive_view == true) {
                // Get all child entities
                $sons = getSonsOf('glpi_entities', $this->fields['entities_id']);
                $sons = implode(',', $sons);
@@ -637,7 +635,7 @@ class PluginAddressingAddressing extends CommonDBTM
          } else {
             $ipdeb = sprintf("%u", ip2long($this->fields["begin_ip"]));
             $ipfin = sprintf("%u", ip2long($this->fields["end_ip"]));
-            $recursive_view = isset($params['seerecursive']) ? $params['seerecursive'] : $this->fields['is_recursive'];
+            $recursive_view = isset($params['seerecursive']) ? $params['seerecursive'] : false;
             $result = $this->compute($start, ['ipdeb' => $ipdeb,
                'ipfin' => $ipfin,
                'recursive_view' => $recursive_view]);
