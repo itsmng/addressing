@@ -481,9 +481,17 @@ class PluginAddressingAddressing extends CommonDBTM
                      AND `dev`.`is_template` = 0 ";
       $dbu = new DbUtils();
       if (isset($entities)) {
-         $sql .= $dbu->getEntitiesRestrictRequest(" AND ", "dev", "entities_id", $entities);
+         $sql .= $dbu->getEntitiesRestrictRequest(" AND ", "dev", "entities_id", $entities, false);
       } else {
-         $sql .= $dbu->getEntitiesRestrictRequest(" AND ", "dev", "entities_id", $this->fields['entities_id']);
+         $is_recursive = isset($recursive_view) ? $recursive_view : $this->fields['is_recursive'];
+         if ($is_recursive) {
+            // Get all child entities
+            $sons = getSonsOf('glpi_entities', $this->fields['entities_id']);
+            $sons = implode(',', $sons);
+            $sql .= " AND `dev`.`entities_id` IN ($sons)";
+         } else {
+            $sql .= $dbu->getEntitiesRestrictRequest(" AND ", "dev", "entities_id", $this->fields['entities_id'], $is_recursive);
+         }
       }
       if (isset($type_filter)) {
          $sql .= " AND `glpi_ipaddresses`.`mainitemtype` = '" . $type_filter . "'";
@@ -536,9 +544,17 @@ class PluginAddressingAddressing extends CommonDBTM
                                  AND INET_ATON(`glpi_ipaddresses`.`name`) <= '$ipfin'";
          $dbu = new DbUtils();
          if (isset($entities)) {
-            $sql .= $dbu->getEntitiesRestrictRequest(" AND ", "dev", "entities_id", $entities);
+            $sql .= $dbu->getEntitiesRestrictRequest(" AND ", "dev", "entities_id", $entities, false);
          } else {
-            $sql .= $dbu->getEntitiesRestrictRequest(" AND ", "dev", "entities_id", $this->fields['entities_id']);
+            $is_recursive = isset($recursive_view) ? $recursive_view : $this->fields['is_recursive'];
+            if ($is_recursive) {
+               // Get all child entities
+               $sons = getSonsOf('glpi_entities', $this->fields['entities_id']);
+               $sons = implode(',', $sons);
+               $sql .= " AND `dev`.`entities_id` IN ($sons)";
+            } else {
+               $sql .= $dbu->getEntitiesRestrictRequest(" AND ", "dev", "entities_id", $this->fields['entities_id'], $is_recursive);
+            }
          }
 
          if (isset($type_filter)) {
@@ -621,8 +637,10 @@ class PluginAddressingAddressing extends CommonDBTM
          } else {
             $ipdeb = sprintf("%u", ip2long($this->fields["begin_ip"]));
             $ipfin = sprintf("%u", ip2long($this->fields["end_ip"]));
+            $recursive_view = isset($params['seerecursive']) ? $params['seerecursive'] : $this->fields['is_recursive'];
             $result = $this->compute($start, ['ipdeb' => $ipdeb,
-               'ipfin' => $ipfin]);
+               'ipfin' => $ipfin,
+               'recursive_view' => $recursive_view]);
          }
 
          $nbipf = 0; // ip libres
@@ -761,6 +779,16 @@ class PluginAddressingAddressing extends CommonDBTM
             PluginAddressingFilter::dropdownFilters($params['id'], $filter);
             echo "</td>";
          }
+         if ($this->fields['is_recursive']) {
+            echo "<tr class='tab_bg_1 center'>";
+            echo "<td>" . __('Recursive view', 'addressing') . "</td><td>";
+            $recursive_view = isset($params['seerecursive']) ? $params['seerecursive'] : 0;
+            self::showSwitchField('seerecursive', $recursive_view);
+            echo "</td>";
+            echo "<td colspan='6'></td>";
+            echo "</tr>";
+         }
+
          echo "<tr class='tab_bg_1 center'>";
          echo "<td colspan='8'>";
          echo "<input type='submit' name='search' value=\"" . _sx('button', 'Search') . "\"
@@ -803,7 +831,11 @@ class PluginAddressingAddressing extends CommonDBTM
          $numrows = count($result);
          //         $numrows = 1 + ip2long($this->fields['end_ip']) - ip2long($this->fields['begin_ip']);
          $result = array_slice($result, $start, $_SESSION["glpilist_limit"]);
-         Html::printPager($start, $numrows, self::getFormURL(), "start=$start&amp;id=$id&amp;filter=$filter",
+         $pager_params = "start=$start&id=$id&filter=$filter";
+         if (isset($params['seerecursive'])) {
+            $pager_params .= "&seerecursive=" . $params['seerecursive'];
+         }
+         Html::printPager($start, $numrows, self::getFormURL(), $pager_params,
             'PluginAddressingReport');
 
 
@@ -993,4 +1025,3 @@ class PluginAddressingAddressing extends CommonDBTM
       }
    }
 }
-

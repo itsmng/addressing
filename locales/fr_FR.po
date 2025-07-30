@@ -97,6 +97,10 @@ msgstr "Ip en double"
 msgid "Reserved IP"
 msgstr "IP réservées"
 
+#: inc/addressing.class.php:784
+msgid "Recursive view"
+msgstr "Vue récursive"
+
 #: inc/addressing.class.php:381 inc/addressing.class.php:757
 #: inc/filter.class.php:43
 msgid "Filter"

@@ -93,6 +93,10 @@ msgstr "Same IP"
 msgid "Reserved IP"
 msgstr "Reserved IP"
 
+#: inc/addressing.class.php:784
+msgid "Recursive view"
+msgstr "Recursive view"
+
 #: inc/addressing.class.php:381 inc/addressing.class.php:757
 #: inc/filter.class.php:43
 msgid "Filter"
