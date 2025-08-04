@@ -551,7 +551,7 @@ class PluginAddressingAddressing extends CommonDBTM
                $sons = implode(',', $sons);
                $sql .= " AND `dev`.`entities_id` IN ($sons)";
             } else {
-               $sql .= $dbu->getEntitiesRestrictRequest(" AND ", "dev", "entities_id", $this->fields['entities_id'], $is_recursive);
+               $sql .= $dbu->getEntitiesRestrictRequest(" AND ", "dev", "entities_id", $this->fields['entities_id'], $this->fields['is_recursive']);
             }
          }
 
